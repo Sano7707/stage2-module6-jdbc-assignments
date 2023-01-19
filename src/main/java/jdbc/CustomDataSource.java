@@ -21,26 +21,30 @@ public class CustomDataSource implements DataSource {
     private final String name;
     private final String password;
 
-    private CustomDataSource(String driver, String url, String password, String name) throws ClassNotFoundException, SQLException {
+    private CustomDataSource(String driver, String url, String password, String name) {
         this.driver = driver;
         this.url = url;
         this.name = name;
         this.password = password;
     }
 
-    public static CustomDataSource getInstance() throws SQLException, ClassNotFoundException {
+    public static CustomDataSource getInstance(){
         instance = new CustomDataSource(getInstance().driver, getInstance().url, getInstance().password, getInstance().name);
         return instance;
     }
 
     @Override
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection() {
         try {
             Class.forName(this.driver);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        return DriverManager.getConnection(this.url, this.name, this.password);
+        try {
+            return DriverManager.getConnection(this.url, this.name, this.password);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
