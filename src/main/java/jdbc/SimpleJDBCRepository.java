@@ -28,11 +28,12 @@ public class SimpleJDBCRepository {
     private static final String findUserByNameSQL = "";
     private static final String findAllUserSQL = "";
 
-    public Long createUser() throws SQLException, IOException, ClassNotFoundException {
+    public Long createUser(User user) throws SQLException, IOException, ClassNotFoundException {
         CustomConnector cn = new CustomConnector();
         connection = cn.getConnection("postgres://macbook@localhost:5432/macbook");
         st = connection.createStatement();
-        Long a = (long) st.executeUpdate("insert into myuser values (1,'Sano','Hambardzumyan',20)");
+        Long a = (long) st.executeUpdate("insert into myuser values (" + user.getId() + ", " +
+                user.getFirstName() + "," + user.getLastName() + "," + user.getAge() + ")");
         st.close();
         return a;
     }
@@ -83,16 +84,18 @@ public class SimpleJDBCRepository {
         return list;
     }
 
-    public User updateUser() throws SQLException, IOException, ClassNotFoundException {
+    public User updateUser(User user) throws SQLException, IOException, ClassNotFoundException {
         CustomConnector cn = new CustomConnector();
         connection = cn.getConnection("postgres://macbook@localhost:5432/macbook");
         st = connection.createStatement();
-        st.executeUpdate("update myuser set firstname = 'aaaa',lastname = 'bbbb',age = 2 where id = " + 1);
+        st.executeUpdate("update myuser set id =  " + user.getId() + ",firstname = " +
+                user.getFirstName() + ",lastname = " + user.getLastName() + ",age = " +
+                user.getAge() + " where id = 1");
         st.close();
         return new User((long)1,"aaaa","bbbb",2);
     }
 
-    private void deleteUser(Long userId) throws SQLException, IOException, ClassNotFoundException {
+    public void deleteUser(Long userId) throws SQLException, IOException, ClassNotFoundException {
         CustomConnector cn = new CustomConnector();
         connection = cn.getConnection("postgres://macbook@localhost:5432/macbook");
         st = connection.createStatement();
