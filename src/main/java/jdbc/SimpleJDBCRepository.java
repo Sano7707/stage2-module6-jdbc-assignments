@@ -30,7 +30,7 @@ public class SimpleJDBCRepository {
 
     public Long createUser(User user) {
         CustomConnector cn = new CustomConnector();
-        connection = cn.getConnection("postgres://macbook@localhost:5432/macbook");
+        connection = cn.getConnection("jdbc:postgresql://localhost:5432/myfirstdb");
         try {
             st = connection.createStatement();
         } catch (SQLException e) {
@@ -38,6 +38,7 @@ public class SimpleJDBCRepository {
         }
         Long a = null;
         try {
+
             a = (long) st.executeUpdate("insert into myuser values (" + user.getId() + ", " +
                     user.getFirstName() + "," + user.getLastName() + "," + user.getAge() + ")");
         } catch (SQLException e) {
@@ -53,7 +54,7 @@ public class SimpleJDBCRepository {
 
     public User findUserById(Long userId){
        CustomConnector cn = new CustomConnector();
-       connection = cn.getConnection("postgres://macbook@localhost:5432/macbook");
+       connection = cn.getConnection("jdbc:postgresql://localhost:5432/myfirstdb");
         try {
             st = connection.createStatement();
         } catch (SQLException e) {
@@ -93,7 +94,7 @@ public class SimpleJDBCRepository {
 
     public User findUserByName(String userName) {
         CustomConnector cn = new CustomConnector();
-        connection = cn.getConnection("postgres://macbook@localhost:5432/macbook");
+        connection = cn.getConnection("jdbc:postgresql://localhost:5432/myfirstdb");
         try {
             st = connection.createStatement();
         } catch (SQLException e) {
@@ -125,7 +126,7 @@ public class SimpleJDBCRepository {
 
     public List<User> findAllUser() {
         CustomConnector cn = new CustomConnector();
-        connection = cn.getConnection("postgres://macbook@localhost:5432/macbook");
+        connection = cn.getConnection("jdbc:postgresql://localhost:5432/myfirstdb");
         try {
             st = connection.createStatement();
         } catch (SQLException e) {
@@ -157,7 +158,7 @@ public class SimpleJDBCRepository {
     public User updateUser(User user)  {
         CustomConnector cn = new CustomConnector();
         try {
-            connection = cn.getConnection("postgres://macbook@localhost:5432/macbook");
+            connection = cn.getConnection("jdbc:postgresql://localhost:5432/myfirstdb");
             st = connection.createStatement();
             st.executeUpdate("update myuser set id =  " + user.getId() + ",firstname = " +
                     user.getFirstName() + ",lastname = " + user.getLastName() + ",age = " +
@@ -173,7 +174,7 @@ public class SimpleJDBCRepository {
     public void deleteUser(Long userId)  {
         try {
             CustomConnector cn = new CustomConnector();
-            connection = cn.getConnection("postgres://macbook@localhost:5432/macbook");
+            connection = cn.getConnection("jdbc:postgresql://localhost:5432/myfirstdb");
             st = connection.createStatement();
             st.executeUpdate("delete from where id = " + userId);
             st.close();

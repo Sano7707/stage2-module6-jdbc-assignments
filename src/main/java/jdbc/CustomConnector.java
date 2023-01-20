@@ -13,28 +13,28 @@ public class CustomConnector {
 
     public Connection getConnection(String url)  {
 
-        InputStream input  = null;
+        InputStream input;
         try {
             input = new FileInputStream("path/to/app.properties");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         Properties properties = new Properties();
         try {
             properties.load(input);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         try {
             Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        try {
             return DriverManager.getConnection(url,properties.getProperty("postgres.name"),properties.getProperty("postgres.password"));
-        } catch (SQLException e) {
+
+        } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     public Connection getConnection(String url, String user, String password)  {
