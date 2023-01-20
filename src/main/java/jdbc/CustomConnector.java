@@ -15,7 +15,7 @@ public class CustomConnector {
 
         InputStream input;
         try {
-            input = new FileInputStream("path/to/app.properties");
+            input = new FileInputStream("src/main/resources/app.properties");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

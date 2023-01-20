@@ -32,20 +32,23 @@ public class SimpleJDBCRepository {
         CustomConnector cn = new CustomConnector();
         connection = cn.getConnection("jdbc:postgresql://localhost:5432/myfirstdb");
         try {
-            st = connection.createStatement();
+            ps = connection.prepareStatement("insert into myusers" + " (id,firstname,lastname,age) values" +
+                    " (?,?,?,?);");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         Long a = null;
         try {
-
-            a = (long) st.executeUpdate("insert into myuser values (" + user.getId() + ", " +
-                    user.getFirstName() + "," + user.getLastName() + "," + user.getAge() + ")");
+            ps.setLong(1,user.getId());
+            ps.setString(2,user.getFirstName());
+            ps.setString(3,user.getLastName());
+            ps.setInt(4,user.getAge());
+            a = (long)ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         try {
-            st.close();
+            ps.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -62,7 +65,7 @@ public class SimpleJDBCRepository {
         }
         ResultSet rs = null;
         try {
-            rs = st.executeQuery("select * from mysuer where id = " + userId);
+            rs = st.executeQuery("select * from myusers where id = " + userId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -100,16 +103,16 @@ public class SimpleJDBCRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        ResultSet rs = null;
+        ResultSet rs;
         try {
-            rs = st.executeQuery("select * from mysuer where firstName = " + userName);
+            rs = st.executeQuery("select* from myusers where firstname = "  + "'" +  userName + "'" + ";");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        String firstName = null;
-        String lastName = null;
+        String firstName ;
+        String lastName ;
         int age = 0;
-        Long id;
+        long id;
         try {
             rs.next();
              id = rs.getLong(1);
@@ -134,7 +137,7 @@ public class SimpleJDBCRepository {
         }
         ResultSet rs = null;
         try {
-            rs = st.executeQuery("select * from mysuer");
+            rs = st.executeQuery("select * from myusers");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -160,9 +163,9 @@ public class SimpleJDBCRepository {
         try {
             connection = cn.getConnection("jdbc:postgresql://localhost:5432/myfirstdb");
             st = connection.createStatement();
-            st.executeUpdate("update myuser set id =  " + user.getId() + ",firstname = " +
-                    user.getFirstName() + ",lastname = " + user.getLastName() + ",age = " +
-                    user.getAge() + " where id = 1");
+            st.executeUpdate("update myusers set id =  " + user.getId() + ",firstname = " +
+                  "'" + user.getFirstName() + "'" + ",lastname = " + "'" + user.getLastName() + "'"  + ",age = " +
+                    user.getAge() + " where id = "  + user.getId());
             st.close();
         }
         catch (Exception e){
@@ -176,11 +179,12 @@ public class SimpleJDBCRepository {
             CustomConnector cn = new CustomConnector();
             connection = cn.getConnection("jdbc:postgresql://localhost:5432/myfirstdb");
             st = connection.createStatement();
-            st.executeUpdate("delete from where id = " + userId);
+            st.executeUpdate("delete from myusers where id = " + userId);
             st.close();
         }
         catch (Exception e){
             e.printStackTrace();
         }
     }
+
 }
