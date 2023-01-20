@@ -35,7 +35,7 @@ public class SimpleJDBCRepository {
             ps = connection.prepareStatement("insert into myusers" + " (id,firstname,lastname,age) values" +
                     " (?,?,?,?);");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         Long a = null;
         try {
@@ -45,13 +45,15 @@ public class SimpleJDBCRepository {
             ps.setInt(4,user.getAge());
             a = (long)ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         try {
             ps.close();
+            connection.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+
         return a;
     }
 
@@ -61,24 +63,24 @@ public class SimpleJDBCRepository {
         try {
             st = connection.createStatement();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         ResultSet rs = null;
         try {
             rs = st.executeQuery("select * from myusers where id = " + userId);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         try {
             rs.next();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         Long id = null;
         try {
             id = rs.getLong(1);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         String firstName = null;
         String lastName = null;
@@ -88,8 +90,10 @@ public class SimpleJDBCRepository {
              lastName = rs.getString(3);
              age = rs.getInt(4);
             st.close();
+            connection.close();
+            rs.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
         return new User(id,firstName,lastName,age);
@@ -101,25 +105,28 @@ public class SimpleJDBCRepository {
         try {
             st = connection.createStatement();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-        ResultSet rs;
+        ResultSet rs = null;
         try {
             rs = st.executeQuery("select* from myusers where firstname = "  + "'" +  userName + "'" + ";");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         String firstName ;
         String lastName ;
         int age = 0;
         long id;
         try {
+            assert rs != null;
             rs.next();
              id = rs.getLong(1);
              firstName = rs.getString(2);
              lastName = rs.getString(3);
              age = rs.getInt(4);
             st.close();
+            connection.close();
+            rs.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -133,13 +140,13 @@ public class SimpleJDBCRepository {
         try {
             st = connection.createStatement();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         ResultSet rs = null;
         try {
             rs = st.executeQuery("select * from myusers");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         List<User> list = new ArrayList<User>();
 
@@ -152,6 +159,8 @@ public class SimpleJDBCRepository {
                 list.add(new User(id, firstName, lastName, age));
             }
             st.close();
+            connection.close();
+            rs.close();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -167,6 +176,9 @@ public class SimpleJDBCRepository {
                   "'" + user.getFirstName() + "'" + ",lastname = " + "'" + user.getLastName() + "'"  + ",age = " +
                     user.getAge() + " where id = "  + user.getId());
             st.close();
+
+            connection.close();
+
         }
         catch (Exception e){
             e.printStackTrace();
@@ -181,6 +193,7 @@ public class SimpleJDBCRepository {
             st = connection.createStatement();
             st.executeUpdate("delete from myusers where id = " + userId);
             st.close();
+            connection.close();
         }
         catch (Exception e){
             e.printStackTrace();
