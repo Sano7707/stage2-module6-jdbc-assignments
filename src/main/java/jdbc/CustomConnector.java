@@ -28,7 +28,7 @@ public class CustomConnector {
         }
 
         try {
-            Class.forName("org.postgresql.Driver");
+            Class.forName(properties.getProperty("postgres.driver"));
             return DriverManager.getConnection(url,properties.getProperty("postgres.name"),properties.getProperty("postgres.password"));
 
         } catch (ClassNotFoundException | SQLException e) {
@@ -38,8 +38,22 @@ public class CustomConnector {
     }
 
     public Connection getConnection(String url, String user, String password)  {
+        InputStream input;
         try {
-            Class.forName("org.postgresql.Driver");
+            input = new FileInputStream("src/main/resources/app.properties");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        Properties properties = new Properties();
+        try {
+            properties.load(input);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            Class.forName(properties.getProperty("postgres.driver"));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
