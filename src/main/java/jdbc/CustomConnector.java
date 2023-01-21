@@ -9,58 +9,26 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+
 public class CustomConnector {
-
-    public Connection getConnection(String url)  {
-
-        InputStream input;
-        try {
-            input = new FileInputStream("src/main/resources/app.properties");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        Properties properties = new Properties();
-        try {
-            properties.load(input);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public Connection connection;
+    public Connection getConnection(String url) {
 
         try {
-            Class.forName(properties.getProperty("postgres.driver"));
-            return DriverManager.getConnection(url,properties.getProperty("postgres.name"),properties.getProperty("postgres.password"));
-
-        } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException(e);
+            return DriverManager.getConnection(url);
+        } catch ( SQLException e) {
+            e.printStackTrace();
         }
-
+        return connection;
     }
 
-    public Connection getConnection(String url, String user, String password)  {
-        InputStream input;
-        try {
-            input = new FileInputStream("src/main/resources/app.properties");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        Properties properties = new Properties();
-        try {
-            properties.load(input);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public Connection getConnection(String url, String user, String password) {
 
         try {
-            Class.forName(properties.getProperty("postgres.driver"));
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            return DriverManager.getConnection(url, user, password);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        try {
-            return DriverManager.getConnection(url,user,password);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return connection;
     }
 }
